@@ -157,20 +157,18 @@ print(NBA_plot)
 
 # 3) Visualise
 # Objective: Seaborn / Matplotlib
-# Using Seaborn set() function to adjust the font size.
+# Setting the figures' size.
+fig, ax = plt.subplots(figsize=(8,8))
+# Setting the font size.
 sns.set(font_scale=1)
-# The background style is set to darkgrid to make it easier to read the plotted data.
-sns.set_style("darkgrid")
-# The relplot() function is used with kind argument set to scatter.
-# The x and y axis are set to show height and weight, and the data argument equals the data wish to plot.
-# The plot is assigned to the variable 'g' as this is common practice when using Seaborn plots.
-g = sns.relplot(x='Height (m)', y='Weight (kg)', data=NBA_plot, kind='scatter')
-g.fig.set_size_inches(8, 8)
-# As this plot is a FacetGrid, the fig.suptitle function is used to add a title.
-# The y argument sets the height of the title and the fontsize argument is to manually adjust the fontsize.
-g.fig.suptitle("Height and Weight of NBA Players in the 2017-18 season", y=1)
-g.set(xlabel='Height (m)', ylabel='Weight (cm)')
+# Creating a scatter plot with height and weight data.
+sns.scatterplot(x='Height (m)', y='Weight (kg)', data=NBA_plot)
+# Setting main title and axis titles.
+ax.set_title("Height and Weight of NBA Players in the 2017-18 season")
+ax.set_xlabel("Height (m)")
+ax.set_ylabel("Weight (kg)")
 plt.show()
+
 
 # 2) Analysing Data: NBA Players' Countries of Origin for data visualization objective.
 # Objective: Looping, iterrows()
