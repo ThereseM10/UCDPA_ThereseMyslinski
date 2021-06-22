@@ -157,17 +157,18 @@ print(NBA_plot)
 
 # 3) Visualise
 # Objective: Seaborn / Matplotlib
-# Using Seaborn relplot() function to plot a scatter plot.
-sns.set()
+# Using Seaborn set() function to adjust the font size.
+sns.set(font_scale=1)
 # The background style is set to darkgrid to make it easier to read the plotted data.
 sns.set_style("darkgrid")
 # The relplot() function is used with kind argument set to scatter.
 # The x and y axis are set to show height and weight, and the data argument equals the data wish to plot.
 # The plot is assigned to the variable 'g' as this is common practice when using Seaborn plots.
 g = sns.relplot(x='Height (m)', y='Weight (kg)', data=NBA_plot, kind='scatter')
+g.fig.set_size_inches(8, 8)
 # As this plot is a FacetGrid, the fig.suptitle function is used to add a title.
 # The y argument sets the height of the title and the fontsize argument is to manually adjust the fontsize.
-g.fig.suptitle("Height and Weight of NBA Players in the 2017-18 season", y=1, fontsize=14)
+g.fig.suptitle("Height and Weight of NBA Players in the 2017-18 season", y=1)
 g.set(xlabel='Height (m)', ylabel='Weight (cm)')
 plt.show()
 
@@ -202,14 +203,14 @@ print(NBA_plot)
 
 # 3) Visualize
 # Objective: Seaborn / Matplotlib
-# Setting the scale
-sns.set()
 # Setting the context to paper as the plot will be inserted into a report document.
 sns.set_context("paper")
 # Using set() function to manually set the font size.
 sns.set(font_scale=1)
 # Using catplot to show the number of countries present in each season, excluding USA.
 g = sns.catplot(x='season', y='country', data=NBA_plot, kind='bar')
+# Setting the figure size.
+g.fig.set_size_inches(10, 6)
 # Setting FacetGrid title and axis labels
 g.fig.suptitle("Number of Countries (excluding USA) in each NBA Season (1996 to 2020)", y=1)
 g.set(xlabel="NBA Season", ylabel="Total Number of Countries")
