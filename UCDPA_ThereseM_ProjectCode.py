@@ -237,3 +237,76 @@ g.set(xlabel="NBA Season", ylabel="Total Number of Countries")
 # Adjusting tick rotation to make the x-axis labels easier to read.
 plt.xticks(rotation=30)
 plt.show()
+
+
+# Dataset 4: Singapore Weather.
+# 1) Importing Data
+# Objective: Importing CSV
+# Importing each stations' CSV file and saving as a pandas DataFrame. Missing values were recognised as blank spaces.
+ang_import = pd.read_csv('angmokio.csv', sep=',', na_values=' ')
+chan_import = pd.read_csv('changi.csv', sep=',', na_values=' ')
+
+# 2) Analysing Data: Monthly Average Temperature
+# Objective: Missing Values / Dropping Duplicates
+# Printing the total number of missing values in each column.
+print(chan_import.isna().sum())
+print(ang_import.isna().sum())
+
+# Replacing missing values with NaN.
+chan_replace = chan_import.replace(' ', np.nan)
+ang_replace = ang_import.replace(' ', np.nan)
+
+# Objective: Functions
+# Created a function to calculate average monthly temperature.
+def monthly_temp_avg(df_replace):
+    # Combining time columns into 'Date' column and converting to pandas datetime.
+    df_replace['Date'] = pd.to_datetime(df_replace[["Year", "Month", "Day"]])
+    # Selecting columns needed for visualization objective.
+    df_subset = df_replace[["Date", "Mean Temperature (°C)"]]
+    df_subset_ind = df_subset.set_index('Date').sort_index()
+    # Renaming temperature column.
+    df_rename = df_subset_ind.rename(columns={"Mean Temperature (°C)": "Avg Temperature (°C)"})
+    # Using resample() function to calculate monthly and using mean() to calculate the average.
+    df_monthly = df_rename.resample('M').mean()
+    return df_monthly
+
+# Using function to identify highest average monthly temperature and the date.
+chan_monthly_temp = monthly_temp_avg(chan_replace)
+print(chan_monthly_temp.sort_values('Avg Temperature (°C)', ascending=False))
+ang_monthly_temp = monthly_temp_avg(ang_replace)
+print(ang_monthly_temp.sort_values('Avg Temperature (°C)', ascending=False))
+
+# Using original pandas dataframe for the daily average temperature.
+chan_replace['Date'] = pd.to_datetime(chan_replace[["Year", "Month", "Day"]])
+ang_replace['Date'] = pd.to_datetime(ang_replace[["Year", "Month", "Day"]])
+chan_daily_temp = chan_replace[["Date", "Mean Temperature (°C)"]]
+ang_daily_temp = ang_replace[["Date", "Mean Temperature (°C)"]]
+
+# Objective: Merge DataFrames
+# Using merge_ordered function to join two time series tables on the Date column.
+# Setting suffixes argument to identify both stations' temperature columns.
+chan_ang_merged = pd.merge_ordered(chan_daily_temp, ang_daily_temp, on='Date', suffixes=['_chan', '_ang'])
+print(chan_ang_merged)
+
+# Objective: Slicing
+# Setting Date column as index.
+chan_ang_merged_ind = chan_ang_merged.set_index('Date')
+# Slicing the period that had the highest monthly average temperature and all columns.
+chan_ang_plot = chan_ang_merged_ind.loc["2016-04-01": "2016-05-31", :]
+
+# 3) Visualise
+# Objective: Matplotlib / Seaborn
+# Setting the figure size and resolution.
+fig, ax = plt.subplots(figsize=(12,6), dpi=100)
+# Plotting a line graph with date on the x-axis and temperature on the y.
+# Setting labels for the legend and linestyle and colour.
+ax.plot(chan_ang_plot.index.values, chan_ang_plot['Mean Temperature (°C)_chan'],
+        label="Changi Station", linestyle="--", color='deepskyblue')
+ax.plot(chan_ang_plot.index.values, chan_ang_plot['Mean Temperature (°C)_ang'],
+        label="Angmokio Station", linestyle="--", color='coral')
+# Setting main and axis titles with fontsize.
+ax.set_title("April and May 2016 Daily Average Temperature in Angomokio and Changi", fontsize=12)
+ax.set_xlabel("Time (daily)", fontsize=10)
+ax.set_ylabel("Average Temperature (°C)", fontsize=10)
+plt.legend()
+plt.show()
