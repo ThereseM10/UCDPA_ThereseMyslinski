@@ -310,3 +310,35 @@ ax.set_xlabel("Time (daily)", fontsize=10)
 ax.set_ylabel("Average Temperature (°C)", fontsize=10)
 plt.legend()
 plt.show()
+
+
+# Dataset 5: World Cities Populations
+# 1) Importing CSV
+# Objective: Import CSV
+read_csv = pd.read_csv('worldcities.csv', sep=',', na_values=[' ', '0'])
+print(read_csv.head())
+
+# Identifying and removing missing values
+print(read_csv.isna().sum())
+csv_dropped = read_csv.dropna()
+
+# Subsetting city and population columns
+city_pop_csv = csv_dropped[["city_ascii", "population"]]
+
+# Renaming the columns
+city_pop_renamed = city_pop_csv.rename(columns={"city_ascii": "City", "population": "Pop"})
+
+# Objective: Dictionary
+# Creating a dictionary from the city and population pandas dataframe
+city_pop_dict = dict(zip(city_pop_renamed['City'], city_pop_renamed['Pop']))
+
+# Accessing dictionary, using key 'Madrid' for the value (population)
+print(city_pop_dict['Madrid'])
+
+# Printing the key with the highest value.
+highest_pop = max(city_pop_dict, key=city_pop_dict.get)
+print(highest_pop, city_pop_dict[highest_pop])
+
+# Printing the key with the lowest value.
+lowest_pop = min(city_pop_dict, key=city_pop_dict.get)
+print(lowest_pop, city_pop_dict[lowest_pop])
